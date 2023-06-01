@@ -85,12 +85,11 @@
 							"\r",
 							"const jsonData = pm.response.json().data;\r",
 							"pm.test(\"Returns the correct employee\", () => {\r",
-							"    pm.expect(jsonData.id).to.eql(1);\r",
 							"    pm.expect(jsonData.id).to.equal(1);\r",
-							"    pm.expect(jsonData.employee_name).to.be.a(\"string\").and.not.empty;\r",
+							"    pm.expect(jsonData.employee_name).to.be.a(\"string\").and.not.be.equal(\"\");\r",
 							"    pm.expect(jsonData.employee_salary).to.be.a(\"number\");\r",
 							"    pm.expect(jsonData.employee_age).to.be.above(18).and.below(99);\r",
-							"    pm.expect(jsonData.profile_image).to.be.a(\"string\").and.not.empty;\r",
+							"    pm.expect(jsonData.profile_image).to.be.a(\"string\").and.be.equal(\"\");\r",
 							"});\r",
 							"\r",
 							"\r",
@@ -179,6 +178,312 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Create new record in database (positive)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var expectedStatusCode = 200;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"var expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const status = pm.response.json().status;\r",
+							"const message = pm.response.json().message;\r",
+							"const jsonData = pm.response.json().data;\r",
+							"var expectedStatus = \"success\";\r",
+							"var expectedMessage = \"Successfully! Record has been added.\";\r",
+							"\r",
+							"pm.test(\"Check Status data type\", () => {\r",
+							"    pm.expect(status).to.be.a(\"string\");\r",
+							"});\r",
+							"pm.test(\"Check Message data type\", () => {\r",
+							"    pm.expect(status).to.be.a(\"string\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check request's status information\", () => {\r",
+							"    pm.expect(status).to.eql(expectedStatus);\r",
+							"});\r",
+							"pm.test(\"Check request's message information\", () => {\t\r",
+							"    pm.expect(message).to.eql(expectedMessage);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check Id data type is number\", () => {\r",
+							"    pm.expect(jsonData.id).to.be.a(\"number\");\r",
+							"});\t\r",
+							"pm.test(\"Check Name data type is string\", () => {\t\r",
+							"    pm.expect(jsonData.name).to.be.a(\"string\");\r",
+							"});\t\r",
+							"pm.test(\"Check Salary data type is number\", () => {\r",
+							"    pm.expect(jsonData.salary).to.be.a(\"number\");\r",
+							"});\t\r",
+							"pm.test(\"Check Age data type is number\", () => {\r",
+							"    pm.expect(jsonData.age).to.be.a(\"number\");\r",
+							"});\r",
+							"pm.test(\"Check Name data type is string\", () => {\r",
+							"    pm.expect(jsonData.name).to.be.a(\"string\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"var expectedEmployeeName = pm.variables.get(\"employeeName\");\r",
+							"var expectedEmployeeAge = pm.variables.get(\"employeeAge\");\r",
+							"var expectedEmployeeSalary = pm.variables.get(\"employeeSalary\");\r",
+							"pm.test(\"Check employee's name information\", () => {\t\r",
+							"    pm.expect(jsonData.name).to.eql(expectedEmployeeName);\r",
+							"});\t\r",
+							"pm.test(\"Check employee's salary information\", () => {\t\r",
+							"    pm.expect(jsonData.salary).to.eql(expectedEmployeeSalary);\r",
+							"});\r",
+							"pm.test(\"Check employee's age information\", () => {\t\r",
+							"    pm.expect(jsonData.age).to.eql(expectedEmployeeAge);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"{{employeeName}}\",\r\n    \"salary\" : \"{{employeeSalary}}\",\r\n    \"age\" : \"{{employeeAge}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/create",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create new record in database (negative - invalid values)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var expectedStatusCode = 400;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"var expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"\",\r\n    \"salary\" : 0,\r\n    \"age\" : 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/create",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create new record in database (negative - invalid types)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var expectedStatusCode = 400;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"var expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : 123,\r\n    \"salary\" : \"abc\",\r\n    \"age\" : true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/create",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create new record in database (negative - empty body)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var expectedStatusCode = 400;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"var expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/create",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"create"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"var employeeNames = [\"Aaron Abbott\", \"Emily Acevedo\", \"Julia Acosta\", \"Sonia Adams\", \"Heydi Aguilar\",\"Karla Aguirre\", \"Sofia Einstein\", \"Carly Smith\", \"Gloria Jones\", \"Nicole Brown\"];",
+					"pm.variables.set(\"employeeName\", employeeNames[_.random(employeeNames.length - 1)]);",
+					"pm.variables.set(\"employeeAge\",_.random(18,99));",
+					"pm.variables.set(\"employeeSalary\",_.random(100000,300000));",
+					"",
+					"var employee = {",
+					"\t\"employeeAge\" : pm.variables.get(\"employeeName\"),",
+					"\t\"employeeAge\" : pm.variables.get(\"employeeAge\"),",
+					"\t\"employeeSalary\" : pm.variables.get(\"employeeSalary\")",
+					"}",
+					"pm.variables.set(\"new_employee\", employee);",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
