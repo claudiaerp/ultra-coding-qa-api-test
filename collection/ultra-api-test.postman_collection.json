@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "6abfbeb7-b695-4320-9aa2-989f8c8b8cdb",
+		"_postman_id": "179206ff-94b2-4775-b016-452ec0827ac0",
 		"name": "ultra-api-test",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27753981"
 	},
 	"item": [
 		{
@@ -50,6 +51,130 @@
 					],
 					"path": [
 						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a single employee data (positive)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expectedStatusCode = 200;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"let expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json().data;\r",
+							"pm.test(\"Returns the correct employee\", () => {\r",
+							"    pm.expect(jsonData.id).to.eql(1);\r",
+							"    pm.expect(jsonData.id).to.equal(1);\r",
+							"    pm.expect(jsonData.employee_name).to.be.a(\"string\").and.not.empty;\r",
+							"    pm.expect(jsonData.employee_salary).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData.employee_age).to.be.above(18).and.below(99);\r",
+							"    pm.expect(jsonData.profile_image).to.be.a(\"string\").and.not.empty;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/employee/1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"employee",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a single employee data (negative)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expectedStatusCode = 400;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"let expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Error has descriptive and clear message\", () => {\r",
+							"    pm.expect(jsonData.status).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.status).to.equal(\"error\");\r",
+							"\r",
+							"    pm.expect(jsonData.message).to.be.a(\"string\").and.not.empty;\r",
+							"    pm.expect(jsonData.message).to.equal(\"Not found record\");\r",
+							"\r",
+							"    pm.expect(jsonData.code).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData.code).to.equal(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/employee/0",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"employee",
+						"0"
 					]
 				}
 			},
