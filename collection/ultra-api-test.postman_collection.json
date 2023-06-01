@@ -1,0 +1,59 @@
+{
+	"info": {
+		"_postman_id": "6abfbeb7-b695-4320-9aa2-989f8c8b8cdb",
+		"name": "ultra-api-test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get all employee data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expectedStatusCode = 200;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"let expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/employees",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"employees"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
