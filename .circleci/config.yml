@@ -1,0 +1,16 @@
+version: 2.1
+orbs:
+  newman: postman/newman@0.0.2
+jobs:
+  build:
+    executor: newman/postman-newman-docker
+    steps:
+      - checkout
+      - run:
+          name: Make Report Directory
+          command: mkdir reports
+      - newman/newman-run:
+          collection: ./collection/ultra-api-test.postman_collection.json
+          environment: ./environment/ultra-api-test-environment.postman_environment.json
+          timeout: '60000'
+          additional-options: --reporters cli,junit --reporter-junit-export ./reports/result.xml
