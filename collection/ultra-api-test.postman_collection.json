@@ -820,6 +820,330 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Delete an employee record (positive)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const createEmployee = {\r",
+							"    url: pm.environment.get(\"URL\") + \"/create\",\r",
+							"    method: \"POST\",\r",
+							"    header: {\r",
+							"        \"Content-Type\": \"application/json\"\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: \"raw\", \r",
+							"        raw: JSON.stringify(pm.variables.get(\"new_employee\"))\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(createEmployee, function(err, res) {\r",
+							"    pm.expect(err).is.null;\r",
+							"    pm.variables.set(\"employeeIdToDelete\", res.json().data.id);\r",
+							"});\r",
+							"\r",
+							"//set timeout to avoid 429 error\r",
+							"setTimeout(function () {}, 120000)\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var expectedStatusCode = 200;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"var expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"pm.sendRequest(pm.environment.get(\"URL\") + \"/get/\" + pm.variables.get(\"employeeIdToDelete\"), function(err, res) {\r",
+							"        if (err) { \r",
+							"            console.log(err); \r",
+							"        }\r",
+							"        pm.test(\"Employee no longer exist\", function () {\r",
+							"            pm.expect(err).to.equal(null);\r",
+							"            pm.expect(res.code).to.equal(404);\r",
+							"        });\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/delete/{{employeeIdToDelete}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"delete",
+						"{{employeeIdToDelete}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete an employee record (negative - blank employee id)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var expectedStatusCode = 404;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"var expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"var expectedMessage = \"Missing record id\";\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Check error message data type is string\", () => {\t\r",
+							"    pm.expect(jsonData.message).to.be.a(\"string\");\r",
+							"});\t\r",
+							"\r",
+							"pm.test(\"Error has descriptive and clear message\", () => {\r",
+							"    pm.expect(jsonData.message).to.equal(expectedMessage);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/delete/",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"delete",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete an employee record (negative - invalid employee id)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const createEmployee = {\r",
+							"    url: pm.environment.get(\"URL\") + \"/create\",\r",
+							"    method: \"POST\",\r",
+							"    header: {\r",
+							"        \"Content-Type\": \"application/json\"\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: \"raw\", \r",
+							"        raw: JSON.stringify(pm.variables.get(\"new_employee\"))\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(createEmployee, function(err, res) {\r",
+							"    pm.expect(err).is.null;\r",
+							"    pm.variables.set(\"employeeIdToDelete\", res.json().data.id);\r",
+							"});\r",
+							"\r",
+							"//set timeout to avoid 429 error\r",
+							"setTimeout(function () {}, 120000)\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var expectedStatusCode = 200;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"var expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"var expectedMessage = \"Invalid record id\";\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Check error message data type is string\", () => {\t\r",
+							"    pm.expect(jsonData.message).to.be.a(\"string\");\r",
+							"});\t\r",
+							"\r",
+							"pm.test(\"Error has descriptive and clear message\", () => {\r",
+							"    pm.expect(jsonData.message).to.equal(expectedMessage);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/delete/abc123",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"delete",
+						"abc123"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete an employee record (negative - not found employee id)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const createEmployee = {\r",
+							"    url: pm.environment.get(\"URL\") + \"/create\",\r",
+							"    method: \"POST\",\r",
+							"    header: {\r",
+							"        \"Content-Type\": \"application/json\"\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: \"raw\", \r",
+							"        raw: JSON.stringify(pm.variables.get(\"new_employee\"))\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(createEmployee, function(err, res) {\r",
+							"    pm.expect(err).is.null;\r",
+							"    pm.variables.set(\"employeeIdToDelete\", res.json().data.id);\r",
+							"});\r",
+							"\r",
+							"//set timeout to avoid 429 error\r",
+							"setTimeout(function () {}, 120000)\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var expectedStatusCode = 200;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"var expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"var expectedMessage = \"Not found record\";\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Check error message data type is string\", () => {\t\r",
+							"    pm.expect(jsonData.message).to.be.a(\"string\");\r",
+							"});\t\r",
+							"\r",
+							"pm.test(\"Error has descriptive and clear message\", () => {\r",
+							"    pm.expect(jsonData.message).to.equal(expectedMessage);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/delete/00998877665544332211",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"delete",
+						"00998877665544332211"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
