@@ -16,7 +16,7 @@ Notes:
 * In case you decide to use newman, make sure you create a **reports** folder in the root of the project
 
 ## Setup:
-* git clone https://github.com/claudiaerp/ultra-coding-qa-api-test.git
+* `git clone https://github.com/claudiaerp/ultra-coding-qa-api-test.git`
 * Import environment and collection in Postman
 
 ## Using newman:
@@ -35,12 +35,12 @@ The test cases fall into the following general test scenario groups:
 1. Basic positive tests (happy paths)
 * Execute API call with valid required parameteres
 
-| Test Action Category          | Test Action Description                                |
-|:-----------------------------:| ------------------------------------------------------:|
-| Validate status code          | Returned status code is – 200 OK                       |
-| Validate headers              | Verify that HTTP headers are as expected, content-type |
-| Validate payload              | Response is a well-formed JSON object                  |
-| Validate payload information  | Returned types are correct and data is reliable        |
+| Test Action Category | Test Action Description  |
+|:--------------------:| ------------------------:|
+| Validate status code | Returned status code is – 200 OK |
+| Validate headers | Verify that HTTP headers are as expected, content-type |
+| Validate payload | Response is a well-formed JSON object |
+| Validate payload information | Returned types are correct and data is reliable |
 
 2. Basic negative tests
 * Missing required parameters
@@ -48,8 +48,8 @@ The test cases fall into the following general test scenario groups:
 * Attempting to delete a resource that does not exist (e.g., employee id not present in DB, invalid employee id (abc123), no id at all)
 * Attempting to update a resource that does not exist (e.g., employee id not present in DB, invalid employee id (abc123), no id at all)
 
-| Test Action Category          | Test Action Description                                                               |
-|:-----------------------------:| -------------------------------------------------------------------------------------:|
-| Validate status code          | Returned status code is – 400 OK                                                      |
-| Validate headers              | Verify that HTTP headers are as expected, content-type                                |
-| Validate payload              | Response is a well-formed JSON object, error is received, it is clear and descriptive |
+| Test Action Category | Test Action Description |
+|:--------------------:| ------------------------:|
+| Validate status code | Returned status code is – 400 OK |
+| Validate headers | Verify that HTTP headers are as expected, content-type |
+| Validate payload | Response is a well-formed JSON object, error is received, it is clear and descriptive |
