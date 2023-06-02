@@ -453,6 +453,373 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Update an employee record (positive)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const createEmployee = {\r",
+							"    url: pm.environment.get(\"URL\") + \"/create\",\r",
+							"    method: \"POST\",\r",
+							"    header: {\r",
+							"        \"Content-Type\": \"application/json\"\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: \"raw\", \r",
+							"        raw: JSON.stringify(pm.variables.get(\"new_employee\"))\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(createEmployee, function(err, res) {\r",
+							"    pm.expect(err).is.null;\r",
+							"    pm.variables.set(\"employeeIdToUpdate\", res.json().data.id);\r",
+							"});\r",
+							"\r",
+							"//set timeout to avoid 429 error\r",
+							"setTimeout(function () {}, 120000)\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var expectedStatusCode = 200;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"var expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const status = pm.response.json().status;\r",
+							"const message = pm.response.json().message;\r",
+							"const jsonData = pm.response.json().data;\r",
+							"var expectedStatus = \"success\";\r",
+							"var expectedMessage = \"Successfully! Record has been updated.\";\r",
+							"\r",
+							"pm.test(\"Check Status data type\", () => {\r",
+							"    pm.expect(status).to.be.a(\"string\");\r",
+							"});\r",
+							"pm.test(\"Check Message data type\", () => {\r",
+							"    pm.expect(status).to.be.a(\"string\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check request's status information\", () => {\r",
+							"    pm.expect(status).to.eql(expectedStatus);\r",
+							"});\r",
+							"pm.test(\"Check request's message information\", () => {\t\r",
+							"    pm.expect(message).to.eql(expectedMessage);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check Id data type is number\", () => {\r",
+							"    pm.expect(jsonData.id).to.be.a(\"number\");\r",
+							"});\t\r",
+							"pm.test(\"Check Name data type is string\", () => {\t\r",
+							"    pm.expect(jsonData.name).to.be.a(\"string\");\r",
+							"});\t\r",
+							"pm.test(\"Check Salary data type is number\", () => {\r",
+							"    pm.expect(jsonData.salary).to.be.a(\"number\");\r",
+							"});\t\r",
+							"pm.test(\"Check Age data type is number\", () => {\r",
+							"    pm.expect(jsonData.age).to.be.a(\"number\");\r",
+							"});\r",
+							"pm.test(\"Check Name data type is string\", () => {\r",
+							"    pm.expect(jsonData.name).to.be.a(\"string\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"var expectedEmployeeName = \"Name Updated\";\r",
+							"var expectedEmployeeAge = 55;\r",
+							"var expectedEmployeeSalary = 500000;\r",
+							"pm.test(\"Check employee's name information\", () => {\t\r",
+							"    pm.expect(jsonData.name).to.eql(expectedEmployeeName);\r",
+							"});\t\r",
+							"pm.test(\"Check employee's salary information\", () => {\t\r",
+							"    pm.expect(jsonData.salary).to.eql(expectedEmployeeSalary);\r",
+							"});\r",
+							"pm.test(\"Check employee's age information\", () => {\t\r",
+							"    pm.expect(jsonData.age).to.eql(expectedEmployeeAge);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"Name Updated\",\r\n    \"salary\" : \"500000\",\r\n    \"age\" : \"55\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/update/{{employeeIdToUpdate}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"update",
+						"{{employeeIdToUpdate}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update an employee record (negative - blank employee id)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var expectedStatusCode = 404;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"var expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"var expectedMessage = \"Missing record id\";\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Check error message data type is string\", () => {\t\r",
+							"    pm.expect(jsonData.message).to.be.a(\"string\");\r",
+							"});\t\r",
+							"\r",
+							"pm.test(\"Error has descriptive and clear message\", () => {\r",
+							"    pm.expect(jsonData.message).to.equal(expectedMessage);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"Name Updated\",\r\n    \"salary\" : \"500000\",\r\n    \"age\" : \"55\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/update/",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"update",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update an employee record (negative - invalid employee id)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var expectedStatusCode = 400;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"var expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"var expectedMessage = \"Invalid record id\";\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Check error message data type is string\", () => {\t\r",
+							"    pm.expect(jsonData.message).to.be.a(\"string\");\r",
+							"});\t\r",
+							"\r",
+							"pm.test(\"Error has descriptive and clear message\", () => {\r",
+							"    pm.expect(jsonData.message).to.equal(expectedMessage);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"Name Updated\",\r\n    \"salary\" : \"500000\",\r\n    \"age\" : \"55\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/update/abc123",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"update",
+						"abc123"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update an employee record (negative - not found employee id)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var expectedStatusCode = 400;\r",
+							"pm.test(\"Status code is [\" + expectedStatusCode +\"]\", function() {\r",
+							"    if (responseCode.code === expectedStatusCode) {\r",
+							"        console.log(\"Request executed Successfully.\");\r",
+							"    } else {\r",
+							"        console.error(\"ERROR: Request failed.\");\r",
+							"    }\r",
+							"    pm.response.to.have.status(expectedStatusCode);\r",
+							"});\r",
+							"\r",
+							"var expectedContentType = \"application/json\";\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql(expectedContentType);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is a well-formed JSON object\", () => {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"var expectedMessage = \"Not found record\";\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Check error message data type is string\", () => {\t\r",
+							"    pm.expect(jsonData.message).to.be.a(\"string\");\r",
+							"});\t\r",
+							"\r",
+							"pm.test(\"Error has descriptive and clear message\", () => {\r",
+							"    pm.expect(jsonData.message).to.equal(expectedMessage);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"Name Updated\",\r\n    \"salary\" : \"500000\",\r\n    \"age\" : \"55\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/update/00998877665544332211",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"update",
+						"00998877665544332211"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
