@@ -1,6 +1,8 @@
 # ultra-coding-qa-api-test
 ultra-coding-qa-api-test
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/claudiaerp/ultra-coding-qa-automation-test/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/claudiaerp/ultra-coding-qa-automation-test/tree/master)
+
 ## Purpose of the project:
 The expected outcome is a Postman collection covering the testing of one of the 4 REST API resources.
 For this project I have used https://dummy.restapiexample.com/ (since the other option did not work for me)
@@ -53,3 +55,10 @@ The test cases fall into the following general test scenario groups:
 | Validate status code | Returned status code is – 400 OK |
 | Validate headers | Verify that HTTP headers are as expected, content-type |
 | Validate payload | Response is a well-formed JSON object, error is received, it is clear and descriptive |
+
+## Circle CI:
+https://app.circleci.com/pipelines/github/claudiaerp/ultra-coding-qa-api-test
+
+1. On the latest build, click `workflow` on `Workflow` column
+2. Click `build` job
+3. All Steps ran on this build will display
