@@ -1,8 +1,7 @@
 # ultra-coding-qa-api-test
 ultra-coding-qa-api-test
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/claudiaerp/ultra-coding-qa-automation-test/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/claudiaerp/ultra-coding-qa-automation-test/tree/master)
-
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/claudiaerp/ultra-coding-qa-api-test/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/claudiaerp/ultra-coding-qa-api-test/tree/master)
 ## Purpose of the project:
 The expected outcome is a Postman collection covering the testing of one of the 4 REST API resources.
 For this project I have used https://dummy.restapiexample.com/ (since the other option did not work for me)
